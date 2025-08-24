@@ -1,4 +1,5 @@
 from random import randint
+from copy import deepcopy
 
 
 class Agent:
@@ -80,20 +81,30 @@ class Environment:
             score += keep.count(5) * 50
         return score
 
+    @staticmethod
+    def check_if_can_keep(dices, keep):
+        for d in keep:
+            if keep.count(d) > dices.count(d):
+                return False
+        return True
+
     def play_one_game(self, agent):
         game = Game()
         while True:
-            response = agent.decide(game.score, game.dices) # TODO send deep copy
-            # TODO check if he keeps relevant dices
-            game.score += self.calculate_score(response[1])
+            response = agent.decide(game.score, deepcopy(game.dices))
+            # check user response
+            if Environment.check_if_can_keep(game.dices, response[1]) == False:
+                raise ValueError("Agent tried to keep dices that are not in the current hand.")
             game.dices = [randint(1, 6) for _ in range(len(game.dices) - len(response[1]))]
-            # new hand...
+            # new hand if played all
             if len(game.dices) == 0:
                 game.dices = [randint(1, 6) for _ in range(6)]
+            # user failed
             if len(response[1]) == 0:
                 game.failed = True
                 game.score = 0
                 break
+            # user decided to end
             if response[0] == False:
                 game.user_decided_to_end = True
                 break
@@ -123,10 +134,20 @@ class Tests:
     def test_play_one_game(self):
         print(" - test_play_one_game to be implemented.")
 
+    def test_check_if_can_keep(self):
+        env = Environment()
+        assert env.check_if_can_keep([1, 2, 3, 4, 5, 6], [1, 2]) == True
+        assert env.check_if_can_keep([1, 2, 3, 4, 5, 6], [1, 7]) == False
+        assert env.check_if_can_keep([1, 2, 3, 4, 5, 6], [7]) == False
+        assert env.check_if_can_keep([1, 2, 3, 4, 5, 6], []) == True
+        assert env.check_if_can_keep([1], [1, 1, 1]) == False
+        print("test_check_if_can_keep passed.")
+
     def __init__(self):
         self.test_check_if_playable()
         self.test_keep_calculation()
         self.test_play_one_game()
+        self.test_check_if_can_keep()
         print("All tests passed.")
 
 
