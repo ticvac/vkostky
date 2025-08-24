@@ -95,6 +95,7 @@ class Environment:
             # check user response
             if Environment.check_if_can_keep(game.dices, response[1]) == False:
                 raise ValueError("Agent tried to keep dices that are not in the current hand.")
+            game.score += Environment.calculate_score(response[1])
             game.dices = [randint(1, 6) for _ in range(len(game.dices) - len(response[1]))]
             # new hand if played all
             if len(game.dices) == 0:
