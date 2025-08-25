@@ -20,6 +20,7 @@ class OneFiveEnjoyer(Agent):
             return [True, keep]
         return [False, keep]
 
+
 class TakesAllRiskManaged(Agent):
     def __init__(self, aggression_level):
         super().__init__()
@@ -44,6 +45,7 @@ class TakesAllRiskManaged(Agent):
         should_continue = True if remaining_dices >= self.aggression_level else False
         return [should_continue, keep]
 
+
 class Game:
     def __init__(self):
         self.score = 0
@@ -65,11 +67,31 @@ class Environment:
         for i in range(1, 7):
             if dices.count(i) >= 3:
                 return True
+        if sorted(dices) == [1, 2, 3, 4, 5, 6]:
+            return True
+        if all(i in dices for i in range(1, 6)):
+            return True
+        if all(i in dices for i in range(2, 7)):
+            return True
         return False
     
+    """Assumes maximum of 6 dices!"""
     @staticmethod
     def calculate_score(keep):
         score = 0
+        # postupky
+        if sorted(keep) == [1, 2, 3, 4, 5, 6]:
+            score += 2000
+            return score
+        if all(i in keep for i in range(1, 6)):
+            score += 1000
+            for i in range(1, 6):
+                keep.remove(i)
+        if all(i in keep for i in range(2, 7)):
+            score += 1500
+            for i in range(2, 7):
+                keep.remove(i)
+        # rest
         if keep.count(1) >= 3:
             score += 1000 * (2 ** (keep.count(1) - 3))
         for i in [2, 3, 4, 5, 6]:
@@ -81,20 +103,41 @@ class Environment:
             score += keep.count(5) * 50
         return score
 
+    """Assumes maximum of 6 dices!"""
     @staticmethod
     def check_if_can_keep(dices, keep):
-        for d in keep:
-            if keep.count(d) > dices.count(d):
+        if len(keep) > 6 or keep == []:
+            return False
+        # postupky
+        if sorted(keep) == [1, 2, 3, 4, 5, 6] and sorted(dices) == [1, 2, 3, 4, 5, 6]:
+            return True
+        if all(i in keep for i in range(1, 6)) and all(i in dices for i in range(1, 6)):
+            for i in range(1, 6):
+                keep.remove(i)
+        if all(i in keep for i in range(2, 7)) and all(i in dices for i in range(2, 7)):
+            for i in range(2, 7):
+                keep.remove(i)
+        # trojice a zbytek...
+        for i in [2, 3, 4, 6]:
+            if 0 < keep.count(i) < 3:
                 return False
-        return True
+            if keep.count(i) > dices.count(i):
+                return False
+            keep = [x for x in keep if x != i]
+        if keep.count(1) > dices.count(1):
+            return False
+        if keep.count(5) > dices.count(5):
+            return False
+        keep = [x for x in keep if x != 1 and x != 5]
+        return len(keep) == 0
 
     def play_one_game(self, agent):
         game = Game()
         while True:
             response = agent.decide(game.score, deepcopy(game.dices))
             # check user response
-            if Environment.check_if_can_keep(game.dices, response[1]) == False:
-                raise ValueError("Agent tried to keep dices that are not in the current hand.")
+            if Environment.check_if_can_keep(game.dices, response[1]) == False and len(response[1]) > 0:
+                raise ValueError(f"Agent tried to keep dices that are not in the current hand or not valid keep.\nresponse: {response[1]}\ngame.dices: {game.dices}")
             game.score += Environment.calculate_score(response[1])
             game.dices = [randint(1, 6) for _ in range(len(game.dices) - len(response[1]))]
             # new hand if played all
@@ -122,6 +165,9 @@ class Tests:
         assert env.check_if_playable([2, 3, 4, 6]) == False
         assert env.check_if_playable([2, 2, 2, 2, 4, 4]) == True
         assert env.check_if_playable([2, 5, 6]) == True
+        assert env.check_if_playable([1, 2, 3, 4, 5, 6]) == True
+        assert env.check_if_playable([3, 1, 2, 3, 4, 5]) == True
+        assert env.check_if_playable([2, 3, 4, 5, 6, 6]) == True
         print("test_check_if_playable passed.")
 
     def test_keep_calculation(self):
@@ -132,6 +178,11 @@ class Tests:
         assert env.calculate_score([4, 4, 4, 4, 5]) == 850
         assert env.calculate_score([1, 1, 1, 1, 1]) == 4000
         assert env.calculate_score([6, 6, 6, 6, 6, 6]) == 4800
+        assert env.calculate_score([1, 2, 3, 4, 5, 6]) == 2000
+        assert env.calculate_score([2, 3, 4, 5, 6]) == 1500
+        assert env.calculate_score([2, 3, 4, 1, 5]) == 1000
+        assert env.calculate_score([2, 3, 4, 1, 5, 1]) == 1100
+        assert env.calculate_score([5, 1, 2, 3, 4, 5]) == 1050
         print("test_keep_calculation passed.")
 
     def test_play_one_game(self):
@@ -139,11 +190,18 @@ class Tests:
 
     def test_check_if_can_keep(self):
         env = Environment()
-        assert env.check_if_can_keep([1, 2, 3, 4, 5, 6], [1, 2]) == True
+        assert env.check_if_can_keep([1, 2, 3, 4, 5, 6], [1, 2]) == False
         assert env.check_if_can_keep([1, 2, 3, 4, 5, 6], [1, 7]) == False
         assert env.check_if_can_keep([1, 2, 3, 4, 5, 6], [7]) == False
-        assert env.check_if_can_keep([1, 2, 3, 4, 5, 6], []) == True
+        assert env.check_if_can_keep([1, 2, 3, 4, 5, 6], []) == False
         assert env.check_if_can_keep([1], [1, 1, 1]) == False
+        assert env.check_if_can_keep([1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5, 6]) == True
+        assert env.check_if_can_keep([1, 2, 3, 4, 5, 6], [1, 3, 4, 2, 5]) == True
+        assert env.check_if_can_keep([1, 2, 3, 4, 5, 6], [ 2, 3, 4, 5, 6]) == True
+        assert env.check_if_can_keep([1, 2, 3], [3]) == False
+        assert env.check_if_can_keep([4, 4, 4], [4]) == False
+        assert env.check_if_can_keep([4, 4, 4], [4, 4, 4]) == True
+        assert env.check_if_can_keep([1, 3, 2, 4, 5, 2], [1, 2, 3, 4, 5, 2]) == False
         print("test_check_if_can_keep passed.")
 
     def __init__(self):
@@ -183,4 +241,4 @@ if __name__ == "__main__":
     print(f"Average score of TakesAllRiskManaged (6) over 100000 games: {avg_of_n_games(takes_all_6, 100000)}")
     print(f"Average score of TakesAllRiskManaged (7) over 100000 games: {avg_of_n_games(takes_all_7, 100000)}")
 
-    # print(f"Average score of OneFiveEnjoyer over 100000 games: {avg_of_n_games(agent, 100000)}")
+    print(f"Average score of OneFiveEnjoyer over 100000 games: {avg_of_n_games(agent, 100000)}")
