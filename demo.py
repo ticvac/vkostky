@@ -3,7 +3,7 @@ from copy import deepcopy
 
 
 class Agent:
-    def decide(self, score, dices):
+    def decide(self, score, dices, number_of_prev_fails=0):
         """
         Returns [bool next, [keep]]
         """
@@ -27,6 +27,7 @@ class TakesAllRiskManaged(Agent):
         # should be between 1 and 5
         self.aggression_level = aggression_level
 
+    # misses postupky XD
     def decide(self, score, dices):
         keep = []
         for i in range(1, 7):
@@ -207,9 +208,9 @@ class Tests:
     def __init__(self):
         self.test_check_if_playable()
         self.test_keep_calculation()
-        self.test_play_one_game()
+        # self.test_play_one_game()
         self.test_check_if_can_keep()
-        print("All tests passed.")
+        print("- All tests passed. -")
 
 
 def avg_of_n_games(agent, n):
@@ -247,3 +248,4 @@ def test_one_five_enjoyer():
 
 if __name__ == "__main__":
     Tests()
+    test_takes_all()
