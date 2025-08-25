@@ -109,6 +109,8 @@ class Environment:
             if response[0] == False:
                 game.user_decided_to_end = True
                 break
+        if game.score < 350:
+            game.score = 0
         return game.score
 
 
