@@ -219,10 +219,8 @@ def avg_of_n_games(agent, n):
         total_score += env.play_one_game(agent)
     return total_score / n
 
-if __name__ == "__main__":
-    Tests()
-    env = Environment()
-    agent = OneFiveEnjoyer()
+
+def test_takes_all():
     takes_all_0 = TakesAllRiskManaged(aggression_level=0)
     takes_all_1 = TakesAllRiskManaged(aggression_level=1)
     takes_all_2 = TakesAllRiskManaged(aggression_level=2)
@@ -241,4 +239,11 @@ if __name__ == "__main__":
     print(f"Average score of TakesAllRiskManaged (6) over 100000 games: {avg_of_n_games(takes_all_6, 100000)}")
     print(f"Average score of TakesAllRiskManaged (7) over 100000 games: {avg_of_n_games(takes_all_7, 100000)}")
 
+
+def test_one_five_enjoyer():
+    agent = OneFiveEnjoyer()
     print(f"Average score of OneFiveEnjoyer over 100000 games: {avg_of_n_games(agent, 100000)}")
+
+
+if __name__ == "__main__":
+    Tests()
