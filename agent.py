@@ -3,11 +3,11 @@ from random import randint
 
 class Agent_1(Agent):
     def k_v_listu(self, k, list_dices):
-        m = [0 for j in range(6)]
-        for j in range(1, 7):
+        m = [0 for i in range(6)]
+        for i in range(1, 7):
             while True:
-                if j in list_dices:
-                    m[j - 1] += 1
+                if i in list_dices:
+                    m[i - 1] += 1
                     list_dices.remove(j)
                 else:
                     break
@@ -16,20 +16,11 @@ class Agent_1(Agent):
             else:
                 return None, None
 
-    def jedna_v_n(n, k):
-        p = 0
-        for i in range(1000000):
-            m = [0, 0]
-            l = [randint(1, 6) for j in range(n)]
-            while True:
-                if 1 in l:
-                    m[0] += 1
-                    l.remove(1)
-                else:
-                    break
-            if max(m) >= k:
-                p += 1
-        return p / 1000000
+    def obsahuje_k(self,k,list_dices):
+        for x in list_dices:
+            if k == x:
+                return True
+        return False
 
     def decide(self, score_total, score, list_dices, fails):
         Next = None
