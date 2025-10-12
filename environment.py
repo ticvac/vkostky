@@ -10,7 +10,7 @@ class Game:
         self.failed = False
 
 class Agent:
-    def decide(self, score, dices, number_of_prev_fails=0):
+    def decide(self, score, total_score, dices, number_of_prev_fails):
         """
         Returns [bool next, [keep]]
         """
@@ -81,10 +81,10 @@ class Environment:
         keep = [x for x in keep if x != 1 and x != 5]
         return len(keep) == 0
 
-    def play_one_turn(self, agent):
+    def play_one_turn(self, agent, total_score, number_of_prev_fails):
         game = Game()
         while True:
-            response = agent.decide(game.score, deepcopy(game.dices))
+            response = agent.decide(game.score, total_score, deepcopy(game.dices), number_of_prev_fails)
             # check user response
             if self.check_if_can_keep(game.dices, response[1]) == False and len(response[1]) > 0:
                 raise ValueError(f"Agent tried to keep dices that are not in the current hand or not valid keep.\nresponse: {response[1]}\ngame.dices: {game.dices}")
