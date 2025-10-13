@@ -6,7 +6,7 @@ soucet = 0
 
 env = Environment()
 
-kostek = 5
+kostek = 1
 iteraci = 100000
 
 for i in range(iteraci):
