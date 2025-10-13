@@ -17,10 +17,10 @@ class Agent_1(Agent):
                 return None, None
 
     def obsahuje_k(self,k,list_dices):
-        for x in list_dices:
-            if k == x:
-                return True
-        return False
+        if k in list_dices:
+            return True
+        else:
+            return False
 
     def decide(self, score_total, score, list_dices, fails):
         Next = None
