@@ -22,16 +22,28 @@ class Agent_1(Agent):
         else:
             return False
 
-    def decide(self, score_total, score, list_dices, fails):
-        Next = None
+    def decide(self, score, score_total, list_dices, fails):
+        Next = False
         list_back = []
-        if list_dices.sort() == [i for i in range(1, 7)]:
+        """if list_dices.sort() == [i for i in range(1, 7)]:
+            print('a')
             list_back = list_dices
+            Next = True"""
+        if 1 in list_dices:
+            list_back = [1]
             Next = True
-        elif self.k_v_listu(len(list_dices), list_dices) != None:
-            list_back = list_dices
+        elif 5 in list_dices:
+            list_back = [5]
             Next = True
-        else:
-            Next = False
+        if score >= 350:
+            return [False, list_back]
 
-        return Next, list_back
+        return [Next, list_back]
+
+agent = Agent_1()
+env = Environment()
+
+score = 0
+for i in range(1000):
+    score += env.play_one_turn(agent, 0, 0)
+print(score/1000)
