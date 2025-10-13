@@ -10,14 +10,14 @@ class Game:
         self.failed = False
 
 class Agent:
-    def avg_score(dice_count):
+    def avg_score(self,dice_count):
         table = [24.939,50.199,86.979,143.318,227.0865,357.362]
-    return table[dice_count-1]
+        return table[dice_count-1]
 
-    def null_prob(dice_count):
+    def null_prob(self,dice_count):
         table = [0.66815,0.44386,0.27648,0.15734,0.07646,0.03114]
-    return table[dice_count-1]
-    
+        return table[dice_count-1]
+
     def decide(self, score, total_score, dices, number_of_prev_fails):
         """
         Returns [bool next, [keep]]
