@@ -1,5 +1,6 @@
 from environment import Environment, Agent
 from random import randint
+from itertools import combinations
 
 class Agent_0(Agent):
     def decide(self, score, score_total, list_dices, fails):
@@ -80,8 +81,8 @@ class Agent_3(Agent):
 
         return [next_turn, list_back]
 
-class Agent_3_1(Agent):
-    def decide(self, score, score_total, list_dices, fails):
+class Agent_4(Agent):
+    def decide(self, score, score_total, list_dices, fails, agresivita = 100):
         list_back = []
         next_turn = False
 
@@ -98,13 +99,8 @@ class Agent_3_1(Agent):
         
         if env.calculate_score(list_back) < self.avg_score(len(list_dices)):
             if list_dices.count(1) >= 1:
-                if len(list_dices) == 6:
-                    list_back = [1 for i in range(list_dices.count(1))]
-                else:
-                    list_back = [1]
                 next_turn = True
             elif list_dices.count(5) >= 1:
-                list_back = [5]
                 next_turn = True
             else:
                 next_turn = True
@@ -112,10 +108,26 @@ class Agent_3_1(Agent):
         if env.calculate_score(list_back) < 350:
             next_turn = True
 
+        maximum = 1
+        for i in range (1, len(list_back)+1):
+            for subset in combinations(list_back, i): 
+                if not env.check_if_can_keep(list_dices, list(subset)):
+                    continue
+                
+                prob, zero_prob = self.histogram(6-len(subset), 350 - (score + env.calculate_score(list(subset))))
+
+                if prob > maximum:
+                    maximum = prob
+                    list_back = list(subset)
+    
+
         return [next_turn, list_back]
 
+
 env = Environment()
-agent = Agent_3_1()
+agent = Agent_4()
+
+print(agent.histogram(5,100))
 
 score = 0
 nuly = 0
