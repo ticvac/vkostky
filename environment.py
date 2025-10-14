@@ -135,3 +135,26 @@ class Environment:
         if game.score < 350:
             game.score = 0
         return game.score
+    
+    def play_one_game(self,agent,target_score):
+        game = Game()
+        turns = 0
+
+        null_counter = 0
+        dif = 0
+
+        while game.score <= target_score:
+            dif = self.play_one_turn(agent, game.score, 0)
+            game.score += dif
+
+            if dif == 0:
+                null_counter += 1
+            else:
+                null_counter == 0
+            if null_counter == 3:
+                game.score = 0
+                null_counter = 0
+            
+            turns += 1
+            
+        return turns

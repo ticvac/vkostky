@@ -117,18 +117,57 @@ class Agent_4(Agent):
 
         return [next_turn, list_back]
 
+class Agent_5(Agent):
+    def decide(self, score, score_total, list_dices, fails):
+        list_back = []
+        next_turn = False
+
+        if sorted(list_dices) == [i for i in range(1, 7)]:
+            list_back = list_dices
+            next_turn = True
+        
+        list_back = [1 for i in range(list_dices.count(1))]
+        list_back += [5 for i in range(list_dices.count(5))]
+
+        for x in [2,3,4,6]:
+            if list_dices.count(x) >= 3:
+                list_back += [x for i in range(list_dices.count(x))]
+        
+        if list_dices.count(1) >= 1 and env.calculate_score(list_back) < 100 + self.avg_score(len(list_dices)-1):
+            list_back = [1]
+            next_turn = True
+        elif list_dices.count(5) >= 1 and env.calculate_score(list_back) < 50 + self.avg_score(len(list_dices)-1):
+            list_back = [5]
+            next_turn = True
+
+        if (score + env.calculate_score(list_back)) < 350:
+            next_turn = True
+        elif (score + env.calculate_score(list_back)) >= 350:
+            next_turn = False
+        if len(list_dices) - len(list_back) == 0:
+            next_turn = True
+
+
+        #print(next_turn, list_back, list_dices)
+        return [next_turn, list_back]
 
 env = Environment()
-agent = Agent_3()
+agent = Agent_5()
 
 score = 0
 nuly = 0
 
+target_score = 10000
 opakovani = 1000
 
 for i in range(opakovani):
+
+    score += env.play_one_game(agent,target_score)
+
+    """
     score += env.play_one_turn(agent, 0, 0)
     if env.play_one_turn(agent, 0, 0) == 0:
         nuly += 1
+    """
+
 print(score/opakovani)
-print(nuly/opakovani)
