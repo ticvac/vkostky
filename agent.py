@@ -79,8 +79,43 @@ class Agent_3(Agent):
             next_turn = True
 
         return [next_turn, list_back]
+
+class Agent_3_1(Agent):
+    def decide(self, score, score_total, list_dices, fails):
+        list_back = []
+        next_turn = False
+
+        if sorted(list_dices) == [i for i in range(1, 7)]:
+            list_back = list_dices
+            next_turn = True
+        
+        list_back = [1 for i in range(list_dices.count(1))]
+        list_back += [5 for i in range(list_dices.count(5))]
+
+        for x in [2,3,4,6]:
+            if list_dices.count(x) >= 3:
+                list_back += [x for i in range(list_dices.count(x))]
+        
+        if env.calculate_score(list_back) < self.avg_score(len(list_dices)):
+            if list_dices.count(1) >= 1:
+                if len(list_dices) == 6:
+                    list_back = [1 for i in range(list_dices.count(1))]
+                else:
+                    list_back = [1]
+                next_turn = True
+            elif list_dices.count(5) >= 1:
+                list_back = [5]
+                next_turn = True
+            else:
+                next_turn = True
+
+        if env.calculate_score(list_back) < 350:
+            next_turn = True
+
+        return [next_turn, list_back]
+
 env = Environment()
-agent = Agent_3()
+agent = Agent_3_1()
 
 score = 0
 nuly = 0
