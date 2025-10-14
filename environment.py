@@ -146,7 +146,7 @@ class Environment:
         list_score = []
 
         while game.global_score <= target_score:
-            dif = self.play_one_turn(agent, game.score, 0)
+            dif = self.play_one_turn(agent, game.global_score, 0)
             game.global_score += dif
 
             if dif == 0:
