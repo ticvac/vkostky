@@ -142,7 +142,7 @@ class Agent_5(Agent):
 
         if (score + env.calculate_score(list_back)) < 350:
             next_turn = True
-        elif (score + env.calculate_score(list_back)) >= 350:
+        else:
             next_turn = False
         if len(list_dices) - len(list_back) == 0:
             next_turn = True

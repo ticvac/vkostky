@@ -142,10 +142,13 @@ class Environment:
 
         null_counter = 0
         dif = 0
+        list_score = []
 
         while game.score <= target_score:
             dif = self.play_one_turn(agent, game.score, 0)
             game.score += dif
+
+            list_score.append(game.score)
 
             if dif == 0:
                 null_counter += 1
