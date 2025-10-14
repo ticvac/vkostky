@@ -1,6 +1,7 @@
 from environment import Environment, Agent
 from random import randint
 from itertools import combinations
+import matplotlib.pyplot as plt
 
 class Agent_0(Agent):
     def decide(self, score, score_total, list_dices, fails):
@@ -152,22 +153,18 @@ class Agent_5(Agent):
         return [next_turn, list_back]
 
 env = Environment()
-agent = Agent_5()
+agent_0 = Agent_0()
+agent_1 = Agent_1()
+agent_2 = Agent_2()
+agent_3 = Agent_3()
+agent_4 = Agent_4()
+agent_5 = Agent_5()
 
-score = 0
-nuly = 0
+p = [agent_2, agent_3, agent_5]
 
-target_score = 10000
-opakovani = 1000
+list_of_scores = [env.play_one_game(p[x], 10000) for x in range(len(p))]
 
-for i in range(opakovani):
-
-    score += env.play_one_game(agent,target_score)
-
-    """
-    score += env.play_one_turn(agent, 0, 0)
-    if env.play_one_turn(agent, 0, 0) == 0:
-        nuly += 1
-    """
-
-print(score/opakovani)
+for i in range(len(list_of_scores)):
+    plt.plot(list_of_scores[i])
+    plt.show()
+    plt.savefig(f'agent_{i}')

@@ -148,8 +148,6 @@ class Environment:
             dif = self.play_one_turn(agent, game.score, 0)
             game.score += dif
 
-            list_score.append(game.score)
-
             if dif == 0:
                 null_counter += 1
             else:
@@ -157,7 +155,10 @@ class Environment:
             if null_counter == 3:
                 game.score = 0
                 null_counter = 0
+
+            list_score.append(game.score)
+
             
             turns += 1
             
-        return turns
+        return list_score

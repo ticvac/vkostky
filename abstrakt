@@ -1,0 +1,4 @@
+Hra v kostky
+
+V rámci naší konfery jsme se zabývali hrou v kostky a optimální strategií, jak hrát tuto hru. Naším cílem bylo vytvořit agenta, který se bude optimálně rozhodovat, jak vyhodnotit aktuální kombinaci, která mu padla na kostkách. Postupně jsme navrhli a naprogramovali šest verzí agentů, u nichž jsme se snažili zvýšit skóre a eliminovat tahy, v nichž žádné body nedostane. 
+Nakonec se ukázalo, že nejefektivnějším způsobem je opatrný přístup agenta, který automaticky skončí po dosažení 350 bodů nutných pro získání skóre v daném kole. 
