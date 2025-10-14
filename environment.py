@@ -152,7 +152,7 @@ class Environment:
             if dif == 0:
                 null_counter += 1
             else:
-                null_counter == 0
+                null_counter = 0
             
             if null_counter >= 3:
                 game.global_score = 0
