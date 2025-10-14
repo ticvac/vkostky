@@ -5,6 +5,7 @@ from copy import deepcopy
 class Game:
     def __init__(self):
         self.score = 0
+        self.global_score = 0
         self.dices = [randint(1, 6) for _ in range(6)]
         self.user_decided_to_end = False
         self.failed = False
@@ -144,19 +145,20 @@ class Environment:
         dif = 0
         list_score = []
 
-        while game.score <= target_score:
+        while game.global_score <= target_score:
             dif = self.play_one_turn(agent, game.score, 0)
-            game.score += dif
+            game.global_score += dif
 
             if dif == 0:
                 null_counter += 1
             else:
                 null_counter == 0
-            if null_counter == 3:
-                game.score = 0
+            
+            if null_counter >= 3:
+                game.global_score = 0
                 null_counter = 0
 
-            list_score.append(game.score)
+            list_score.append(game.global_score)
 
             
             turns += 1
