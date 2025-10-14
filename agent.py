@@ -76,9 +76,10 @@ class Agent_3(Agent):
             else:
                 next_turn = True
 
-        if env.calculate_score(list_back) < 350:
+        if (score + env.calculate_score(list_back)) < 350:
             next_turn = True
 
+        #print(next_turn, list_back, list_dices)
         return [next_turn, list_back]
 
 class Agent_4(Agent):
@@ -97,17 +98,7 @@ class Agent_4(Agent):
             if list_dices.count(x) >= 3:
                 list_back += [x for i in range(list_dices.count(x))]
         
-        if env.calculate_score(list_back) < self.avg_score(len(list_dices)):
-            if list_dices.count(1) >= 1:
-                next_turn = True
-            elif list_dices.count(5) >= 1:
-                next_turn = True
-            else:
-                next_turn = True
-
-        if env.calculate_score(list_back) < 350:
-            next_turn = True
-
+        prob = 1
         maximum = 1
         for i in range (1, len(list_back)+1):
             for subset in combinations(list_back, i): 
@@ -116,23 +107,24 @@ class Agent_4(Agent):
                 
                 prob, zero_prob = self.histogram(6-len(subset), 350 - (score + env.calculate_score(list(subset))))
 
-                if prob > maximum:
+                if prob < maximum:
                     maximum = prob
                     list_back = list(subset)
-    
+        
+        #print(prob, maximum, list_dices, list_back)
+        if (score + env.calculate_score(list_back)) < 350:
+            next_turn = True
 
         return [next_turn, list_back]
 
 
 env = Environment()
-agent = Agent_4()
-
-print(agent.histogram(5,100))
+agent = Agent_3()
 
 score = 0
 nuly = 0
 
-opakovani = 10000
+opakovani = 1000
 
 for i in range(opakovani):
     score += env.play_one_turn(agent, 0, 0)

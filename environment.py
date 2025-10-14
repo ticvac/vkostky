@@ -37,7 +37,7 @@ class Agent:
         for key,value in histogram[dice_count-1].items():
             if key >= score:
                 prob += value
-        return prob, histogram[dice_count-1][0]
+        return 1 - prob, histogram[dice_count-1][0]
 
     def decide(self, score, total_score, dices, number_of_prev_fails):
         """
