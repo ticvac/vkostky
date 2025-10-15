@@ -157,9 +157,11 @@ class Agent_5(Agent):
         # print(next_turn, list_back, list_dices)
         return [next_turn, list_back]
 
+
+
 def plot_graphs():
-    p = [agent_2, agent_3, agent_5]
-    names = ['agent_2', 'agent_3', 'agent_5']
+    p = [agent_0,agent_1,agent_2, agent_3,  agent_4, agent_5]
+    names = ['agent_0','agent_1','agent_2', 'agent_3', 'agent_4', 'agent_5']
 
     list_of_scores = [env.play_one_game(p[x], 10000) for x in range(len(p))]
 
@@ -186,4 +188,4 @@ agent_4 = Agent_4()
 agent_5 = Agent_5()
 
 
-avg_turn()
+plot_graphs()
