@@ -111,7 +111,7 @@ class Agent_4(Agent):
                 if not env.check_if_can_keep(list_dices, list(subset)):
                     continue
 
-                prob, zero_prob = self.histogram(6 - len(subset), 350 - (score + env.calculate_score(list(subset))))
+                prob = self.histogram(6 - len(subset), 350 - (score + env.calculate_score(list(subset))))
 
                 if prob < maximum:
                     maximum = prob
@@ -122,7 +122,6 @@ class Agent_4(Agent):
             next_turn = True
 
         return [next_turn, list_back]
-
 
 class Agent_5(Agent):
     def decide(self, score, score_total, list_dices, fails):
@@ -147,7 +146,7 @@ class Agent_5(Agent):
             list_back = [5]
             next_turn = True
 
-        if (score + env.calculate_score(list_back)) < 350:
+        if (score + env.calculate_score(list_back)) < 350 or len(list_dices) - len(list_back) >= 5:
             next_turn = True
         else:
             next_turn = False
@@ -158,10 +157,9 @@ class Agent_5(Agent):
         return [next_turn, list_back]
 
 
-
 def plot_graphs():
     p = [agent_0,agent_1,agent_2, agent_3,  agent_4, agent_5]
-    names = ['agent_0','agent_1','agent_2', 'agent_3', 'agent_4', 'agent_5']
+    names = ['agent_0 ','agent_1','agent_2', 'agent_3', 'agent_4', 'agent_5']
 
     list_of_scores = [env.play_one_game(p[x], 10000) for x in range(len(p))]
 
@@ -170,8 +168,8 @@ def plot_graphs():
         plt.savefig(names[i])
         plt.close()
 
-def avg_turn(iterace = 1000):
-    p = [agent_2, agent_3, agent_5]
+def avg_turn(iterace = 100000):
+    p = [agent_5, agent_5_1]
 
     for i in p:
         soucet = 0
@@ -187,5 +185,31 @@ agent_3 = Agent_3()
 agent_4 = Agent_4()
 agent_5 = Agent_5()
 
+#avg_turn()
 
-plot_graphs()
+score = 0
+nuly = 0
+
+
+opakovani = 10000
+agent = agent_5
+
+for i in range(opakovani):
+    score += env.play_one_turn(agent, 0, 0)
+    if env.play_one_turn(agent, 0, 0) == 0:
+        nuly += 1
+print(score/opakovani)
+print(nuly/opakovani)
+
+'''
+agent_score = 0
+player_score = 0
+
+while True:
+    dif = env.play_one_turn(agent_5, agent_score, 0)
+    agent_score += dif
+
+    print("Agent score: ", agent_score, "    Agent diff: ", dif)
+    if input("Enter to continue, X to stop: ") == "X":
+        break
+'''

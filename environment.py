@@ -34,11 +34,14 @@ class Agent:
         ]
 
         prob = 0
+        #key_sum
 
         for key,value in histogram[dice_count-1].items():
             if key >= score:
-                prob += value
-        return 1 - prob, histogram[dice_count-1][0]
+                prob += value #*key
+                #key_sum += key
+        #prob /= key_sum
+        return prob
 
     def decide(self, score, total_score, dices, number_of_prev_fails):
         """
@@ -145,8 +148,8 @@ class Environment:
         dif = 0
         list_score = []
 
-        #while game.global_score <= target_score:
-        while turns <= 500:
+        while game.global_score <= target_score:
+            #while turns <= 500:
             dif = self.play_one_turn(agent, game.global_score, 0)
             game.global_score += dif
 
