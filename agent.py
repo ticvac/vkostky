@@ -240,5 +240,5 @@ agent_4 = Agent_4()
 agent_5 = Agent_5()
 
 
-avg_turn()
+avg_game(iterace = 100)
 
