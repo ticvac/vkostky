@@ -63,6 +63,7 @@ class Agent_3(Agent):
         if sorted(list_dices) == [i for i in range(1, 7)]:
             list_back = list_dices
             next_turn = True
+            return [next_turn, list_back]
 
         list_back = [1 for i in range(list_dices.count(1))]
         list_back += [5 for i in range(list_dices.count(5))]
@@ -131,6 +132,7 @@ class Agent_5(Agent):
         if sorted(list_dices) == [i for i in range(1, 7)]:
             list_back = list_dices
             next_turn = True
+            return [next_turn, list_back]
 
         list_back = [1 for i in range(list_dices.count(1))]
         list_back += [5 for i in range(list_dices.count(5))]
@@ -158,8 +160,8 @@ class Agent_5(Agent):
 
 
 def plot_graphs():
-    p = [agent_0,agent_1,agent_2, agent_3,  agent_4, agent_5]
-    names = ['agent_0 ','agent_1','agent_2', 'agent_3', 'agent_4', 'agent_5']
+    p = [agent_5]
+    names = ['agent_5']
 
     list_of_scores = [env.play_one_game(p[x], 10000) for x in range(len(p))]
 
@@ -168,15 +170,67 @@ def plot_graphs():
         plt.savefig(names[i])
         plt.close()
 
-def avg_turn(iterace = 100000):
-    p = [agent_5, agent_5_1]
+def avg_game(iterace = 1000, agent = Agent_5):
+    soucet = 0
+    for j in range(iterace):
+        soucet += len(env.play_one_game(agent, 10000))
+        #print(j)
+    print("Soucet agent" , agent , "  " , soucet/iterace)
 
-    for i in p:
-        soucet = 0
-        for j in range(iterace):
-            soucet += len(env.play_one_game(i, 10000))
-        print("Soucet agent" , i , "  " , soucet/iterace)
+def avg_turn(iterace = 10000, agent = Agent_5):
+    score = 0
+    nuly = 0
 
+    for i in range(iterace):
+        diff = env.play_one_turn(agent_5, 0, 0)
+        score += diff
+
+        if diff == 0:
+            nuly += 1
+    print(score/iterace)
+    print(nuly/iterace)
+
+def play_against_human(agent = Agent_5):
+    agent_score = 0
+    player_score = 0
+
+    while True:
+        dif = env.play_one_turn(agent_5, agent_score, 0)
+        agent_score += dif
+
+        if agent_score >= 10000:
+            print("Agent won!")
+            break
+
+        print("Agent score: ", agent_score, "    Agent diff: ", dif, "      Player score: ", player_score)
+        
+        player_dif = input("Enter your score: ")
+        player_null_counter = 0
+
+        if player_dif == "":
+            player_dif = "0"
+        if player_dif == "X":
+            break
+        elif player_dif.isdigit():
+            player_score += int(player_dif)
+        else:
+            print("Invaid input, terminated game.")
+            break
+        
+        if player_score >= 10000:
+            print("Player won!")
+            break
+        
+        if int(player_dif) == 0:
+            player_null_counter += 1
+            print(player_null_counter)
+            if player_null_counter >= 3:
+                player_score = 0
+                print("Player score reset to 0 due to 3 consecutive fails.")
+        else:
+            player_null_counter = 0
+
+         
 env = Environment()
 agent_0 = Agent_0()
 agent_1 = Agent_1()
@@ -185,31 +239,6 @@ agent_3 = Agent_3()
 agent_4 = Agent_4()
 agent_5 = Agent_5()
 
-#avg_turn()
 
-score = 0
-nuly = 0
+avg_turn()
 
-
-opakovani = 10000
-agent = agent_5
-
-for i in range(opakovani):
-    score += env.play_one_turn(agent, 0, 0)
-    if env.play_one_turn(agent, 0, 0) == 0:
-        nuly += 1
-print(score/opakovani)
-print(nuly/opakovani)
-
-'''
-agent_score = 0
-player_score = 0
-
-while True:
-    dif = env.play_one_turn(agent_5, agent_score, 0)
-    agent_score += dif
-
-    print("Agent score: ", agent_score, "    Agent diff: ", dif)
-    if input("Enter to continue, X to stop: ") == "X":
-        break
-'''
