@@ -240,7 +240,6 @@ agent_4 = Agent_4()
 agent_5 = Agent_5()
 
 
-avg_turn(iterace=100000)
-
 print("baf")
+avg_game(iterace = 100)
 
